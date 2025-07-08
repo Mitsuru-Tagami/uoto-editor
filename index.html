@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>魚兎エディタ</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <!-- Author: Mitsuru Tagami (mitsuru-tagami@island.dti.ne.jp) -->
+    <link rel="stylesheet" href="css/uoto-editor.css">
+    <link rel="stylesheet" href="css/plugins/vertical-writing-plugin.css">
+    <script type="module" src="config/plugins.js"></script>
+</head>
+<body>
+
+    <div class="header">
+        <h1 id="editor-title">魚兎エディタ</h1>
+    </div>
+
+    <div class="controls">
+        <button id="open-btn">ファイルを開く</button>
+        <button id="save-btn">ファイルに保存</button>
+        <input type="file" id="file-input" accept=".txt" style="display: none;">
+
+        <input type="text" id="search-input" placeholder="検索ワード" style="margin-left: 20px; padding: 5px;">
+        <input type="text" id="replace-input" placeholder="置換ワード" style="padding: 5px;">
+        <button id="find-next-btn">次を検索</button>
+        <button id="replace-btn">置換</button>
+        <button id="replace-all-btn">すべて置換</button>
+        <span style="font-size: 12px; color: #666; margin-left: 10px;">\n改行、\s空白記号</span>
+    </div>
+
+    <div class="editor-wrapper">
+        <textarea id="editor">ようこそ、魚兎エディタへ！
+
+【かんたんな使い方】
+・エディタのタイトル（「魚兎エディタ」って書いてあるところ）をクリックすると、縦書きと横書きが切り替わります（縦書きプラグイン有効時）。
+・「ファイルを開く」「ファイルに保存」で、パソコンの中のテキストファイルを直接編集できます。
+・検索や置換の機能も、ぜひ使ってみてね。
+
+※お使いのブラウザのセキュリティ設定によっては、「ファイルに保存」ボタンを押しても保存用の画面が出てこない場合があります。
+
+※横書きモード時の下部の空白は、HTMLやカクヨム記法などのマークアップ言語のプレビューエリアとして利用されます。
+
+---
+2025年7月6日 α版リリース
+2025年7月6日 Faviconを追加しました。
+2025年7月8日 仕様を大幅に変更し、プラグイン仕様書とプラグイン管理ドキュメントを追加しました。
+</textarea>
+        <div id="preview">プレビューエリア</div>
+        <div id="eof-indicator">EOF</div>
+    </div>
+
+    <script src="js/uoto-editor.js"></script>
+    <script type="module">
+        import { pluginList } from './config/plugins.js';
+        import { VerticalWritingPlugin } from './js/plugins/vertical-writing-plugin.js';
+
+        // 利用可能なプラグインのマップ
+        const availablePlugins = {
+            'VerticalWritingPlugin': VerticalWritingPlugin,
+            // 他のプラグインもここに追加
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const editorInstance = new Editor({
+                editorId: 'editor',
+                previewId: 'preview',
+                eofIndicatorId: 'eof-indicator',
+                openBtnId: 'open-btn',
+                saveBtnId: 'save-btn',
+                fileInputId: 'file-input',
+                searchInputId: 'search-input',
+                replaceInputId: 'replace-input',
+                findNextBtnId: 'find-next-btn',
+                replaceBtnId: 'replace-btn',
+                replaceAllBtnId: 'replace-all-btn',
+                editorTitleId: 'editor-title'
+            });
+
+            // プラグインを動的に登録
+            pluginList.forEach(pluginName => {
+                if (availablePlugins[pluginName]) {
+                    const pluginInstance = new availablePlugins[pluginName](editorInstance);
+                    editorInstance.registerPlugin(pluginInstance);
+                } else {
+                    console.warn(`Plugin ${pluginName} not found in availablePlugins map.`);
+                }
+            });
+
+            // グローバルアクセス用 (デバッグや将来のプラグインで必要になる場合)
+            window.uotoEditor = editorInstance;
+        });
+    </script>
+
+</body>
+
+    <div class="author-fixed-info">
+        © 2025 Mitsuru Tagami - <a href="mailto:mitsuru-tagami@island.dti.ne.jp">mitsuru-tagami@island.dti.ne.jp</a>
+    </div>
+
+</html>

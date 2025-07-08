@@ -1,0 +1,51 @@
+/* 縦書きモードのスタイル */
+#editor.vertical-writing {
+    writing-mode: vertical-rl;
+    -webkit-writing-mode: vertical-rl;
+    -ms-writing-mode: tb-rl;
+    white-space: pre-wrap;
+    background-image: linear-gradient(to left, #ddd 1px, transparent 1px);
+    background-size: 24px 100%;
+    overflow-x: auto; /* 縦書き時の横スクロール */
+    overflow-y: hidden; /* 縦書き時の縦スクロールは不要 */
+    word-break: normal;
+    padding-top: 0; /* 上部の余白をなくす */
+    padding-bottom: 40px; /* 下部の余白をしっかり確保 */
+    /* 20行分の高さに固定 (line-height * 20 + padding-top + padding-bottom) */
+    flex-basis: calc(1.5em * 20 + 40px); /* 0px top + 40px bottom */
+    flex-shrink: 0; /* 縮まないようにする */
+}
+
+/* 横書きモードのスタイル */
+#editor.horizontal-writing {
+    writing-mode: horizontal-tb;
+    -webkit-writing-mode: horizontal-tb;
+    -ms-writing-mode: lr-tb;
+    white-space: normal;
+    background-image: linear-gradient(to bottom, #ddd 1px, transparent 1px);
+    background-size: 100% 24px;
+    overflow-y: auto; /* 横書き時の縦スクロール */
+    overflow-x: auto; /* 横書き時の横スクロール */
+    word-break: break-word;
+    padding-right: 20px; /* 横書き時の右側の余白 */
+    flex: 1; /* 利用可能なスペースを埋める */
+    height: auto; /* 高さを自動調整 */
+}
+
+/* 縦書きモードのスタイル (プレビュー) */
+#preview.vertical-writing {
+    display: block; /* 縦書きではプレビューを表示 */
+    writing-mode: vertical-rl;
+    -webkit-writing-mode: vertical-rl;
+    -ms-writing-mode: tb-rl;
+    white-space: pre-wrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    /* 縦書き時に文字が切れないように、内側にしっかり余白を確保 */
+    padding: 20px;
+}
+
+/* 横書きモードのスタイル (プレビュー) */
+#preview.horizontal-writing {
+    display: none; /* 横書きではプレビューを非表示 */
+}

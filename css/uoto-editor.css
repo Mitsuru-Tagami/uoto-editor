@@ -1,0 +1,155 @@
+/* すべての要素にbox-sizing: border-boxを適用 */
+* {
+    box-sizing: border-box;
+}
+
+/* 全体のスタイル */
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* ページ全体のスクロールを防ぐ */
+    box-sizing: border-box;
+}
+body {
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    background-color: #f0f0f0;
+    height: 100vh;
+    width: 100%;
+    align-items: stretch;
+    border: 2px solid red; /* デバッグ用 */
+}
+
+/* ヘッダー部分 */
+.header {
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    flex-shrink: 0; /* ヘッダーが縮まないようにする */
+    width: 100%; /* 明示的に幅を100%に設定 */
+}
+
+#editor-title {
+    margin: 0; /* h1のデフォルトマージンをリセット */
+    font-size: 1.5rem; /* 見た目のためにサイズを調整 */
+}
+
+/* 操作ボタンのエリア */
+.controls {
+    padding: 10px;
+    background-color: #ddd;
+    border-bottom: 1px solid #ccc;
+    flex-shrink: 0; /* コントロールが縮まないようにする */
+    width: 100%; /* 明示的に幅を100%に設定 */
+}
+
+/* ボタンのスタイル */
+button {
+    padding: 8px 16px;
+    font-size: 14px;
+    border: 1px solid #888;
+    border-radius: 4px;
+    background-color: #fff;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+button:hover {
+    background-color: #e7e7e7;
+}
+
+/* エディタ全体のラッパー */
+.editor-wrapper {
+    flex: 1; /* 利用可能な残りのスペースをすべて埋める */
+    margin: 0;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    position: relative; /* 子要素のabsolute配置の基準 */
+    width: 100%; /* 親の幅いっぱいに広がるように */
+    min-height: 0; /* flexboxの縮小問題を解決 */
+    display: flex; /* 子要素をフレックスアイテムとして扱う */
+    flex-direction: column; /* 子要素を縦方向に並べる */
+    border: 2px solid blue; /* デバッグ用 */
+}
+
+/* テキストエリア */
+#editor {
+    flex: 1; /* ラッパー内で利用可能なスペースを埋める */
+    width: 100%;
+    align-self: stretch;
+    font-family: 'Yu Gothic', 'Meiryo', monospace, sans-serif;
+    font-size: 16px;
+    padding: 20px;
+    border: none;
+    outline: none;
+    resize: none;
+    line-height: 1.5;
+    margin: 0;
+    box-sizing: border-box;
+    min-width: 0;
+}
+
+/* プレビューエリア */
+#preview {
+    flex: 1; /* 残りのスペースをすべて埋める */
+    padding: 20px;
+    border-top: 1px solid #ccc;
+    overflow-y: auto;
+    background-color: #f9f9f9;
+    min-height: 0; /* flexアイテムの縮小問題を解決 */
+    font-family: 'Yu Gothic', 'Meiryo', monospace, sans-serif; /* エディタとフォントを合わせる */
+    font-size: 16px; /* エディタとフォントサイズを合わせる */
+    line-height: 1.5; /* エディタと行の高さを合わせる */
+    color: #333; /* 文字色を見やすく */
+}
+
+/* テキストエリアのスクロールバーのスタイル */
+#editor::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+#editor::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 6px;
+    border: 3px solid transparent;
+    background-clip: padding-box;
+}
+
+#editor::-webkit-scrollbar-track {
+    background-color: #f0f0f0;
+}
+
+/* EOF表示 */
+#eof-indicator {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    font-size: 12px;
+    color: #888;
+    pointer-events: none;
+}
+
+/* 作者情報固定表示 */
+.author-fixed-info {
+    position: fixed;
+    bottom: 30px; /* 下からの距離を増やす */
+    right: 30px; /* 右からの距離を増やす */
+    font-size: 0.7rem;
+    color: #aaa;
+    z-index: 1000; /* 他の要素の上に表示 */
+    text-align: right;
+}
+
+.author-fixed-info a {
+    color: #aaa;
+    text-decoration: none;
+}
+
+.author-fixed-info a:hover {
+    text-decoration: underline;
+}
