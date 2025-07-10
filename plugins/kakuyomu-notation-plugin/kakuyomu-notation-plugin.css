@@ -1,0 +1,25 @@
+/* カクヨム記法プラグイン用スタイル */
+
+/* ルビ */
+ruby {
+    ruby-align: center;
+}
+
+rt {
+    font-size: 0.6em; /* ルビの文字サイズを小さく */
+    -webkit-text-emphasis-position: under; /* Webkit系ブラウザでのルビの位置調整 */
+}
+
+/* 強調 */
+em {
+    font-weight: bold;
+    color: #007bff; /* 強調色 */
+}
+
+/* 傍点 */
+.emphasis {
+    text-emphasis: filled circle;
+    -webkit-text-emphasis: filled circle;
+    text-emphasis-color: black; /* 明示的に色を指定 */
+    -webkit-text-emphasis-color: black;
+}

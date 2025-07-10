@@ -7,8 +7,8 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <!-- Author: Mitsuru Tagami (mitsuru-tagami@island.dti.ne.jp) -->
     <link rel="stylesheet" href="css/uoto-editor.css">
-    <link rel="stylesheet" href="css/plugins/vertical-writing-plugin.css">
-    <script type="module" src="config/plugins.js"></script>
+    <!-- Prism.js (シンタックスハイライト用) -->
+    <link href="plugins/syntax-highlight-plugin/prism.min.css" rel="stylesheet" />
 </head>
 <body>
 
@@ -19,6 +19,7 @@
     <div class="controls">
         <button id="open-btn">ファイルを開く</button>
         <button id="save-btn">ファイルに保存</button>
+        <button id="toggle-sinha-btn">シンハONOFF</button>
         <input type="file" id="file-input" accept=".txt" style="display: none;">
 
         <input type="text" id="search-input" placeholder="検索ワード" style="margin-left: 20px; padding: 5px;">
@@ -26,11 +27,14 @@
         <button id="find-next-btn">次を検索</button>
         <button id="replace-btn">置換</button>
         <button id="replace-all-btn">すべて置換</button>
-        <span style="font-size: 12px; color: #666; margin-left: 10px;">\n改行、\s空白記号</span>
+        <span style="font-size: 12px; color: #666; margin-left: 10px;">
+改行、\s空白記号</span>
     </div>
 
     <div class="editor-wrapper">
-        <textarea id="editor">ようこそ、魚兎エディタへ！
+        <div id="line-numbers" class="line-numbers"></div>
+        <div class="editor-container">
+            <textarea id="editor">ようこそ、魚兎エディタ！
 
 【かんたんな使い方】
 ・エディタのタイトル（「魚兎エディタ」って書いてあるところ）をクリックすると、縦書きと横書きが切り替わります（縦書きプラグイン有効時）。
@@ -39,58 +43,27 @@
 
 ※お使いのブラウザのセキュリティ設定によっては、「ファイルに保存」ボタンを押しても保存用の画面が出てこない場合があります。
 
-※横書きモード時の下部の空白は、HTMLやカクヨム記法などのマークアップ言語のプレビューエリアとして利用されます。
+※横書きモード時の下部の空白は、HTMLやカクヨム｜記法《きほう》などのマークアップ言語のプレビューエリアとして利用されます。
 
 ---
 2025年7月6日 α版リリース
 2025年7月6日 Faviconを追加しました。
 2025年7月8日 仕様を大幅に変更し、プラグイン仕様書とプラグイン管理ドキュメントを追加しました。
 </textarea>
-        <div id="preview">プレビューエリア</div>
-        <div id="eof-indicator">EOF</div>
+            <div id="preview"></div>
+            <div id="eof-indicator">EOF</div>
+        </div>
     </div>
 
+    <!-- Prism.js (シンタックスハイライト用) -->
+    <script src="plugins/syntax-highlight-plugin/prism.min.js"></script>
+    <script src="plugins/syntax-highlight-plugin/prism-javascript.min.js"></script>
+    <script src="plugins/syntax-highlight-plugin/prism-markup.min.js"></script>
+    <script src="plugins/syntax-highlight-plugin/prism-css.min.js"></script>
+    <script src="plugins/syntax-highlight-plugin/prism-markdown.min.js"></script>
+
     <script src="js/uoto-editor.js"></script>
-    <script type="module">
-        import { pluginList } from './config/plugins.js';
-        import { VerticalWritingPlugin } from './js/plugins/vertical-writing-plugin.js';
-
-        // 利用可能なプラグインのマップ
-        const availablePlugins = {
-            'VerticalWritingPlugin': VerticalWritingPlugin,
-            // 他のプラグインもここに追加
-        };
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const editorInstance = new Editor({
-                editorId: 'editor',
-                previewId: 'preview',
-                eofIndicatorId: 'eof-indicator',
-                openBtnId: 'open-btn',
-                saveBtnId: 'save-btn',
-                fileInputId: 'file-input',
-                searchInputId: 'search-input',
-                replaceInputId: 'replace-input',
-                findNextBtnId: 'find-next-btn',
-                replaceBtnId: 'replace-btn',
-                replaceAllBtnId: 'replace-all-btn',
-                editorTitleId: 'editor-title'
-            });
-
-            // プラグインを動的に登録
-            pluginList.forEach(pluginName => {
-                if (availablePlugins[pluginName]) {
-                    const pluginInstance = new availablePlugins[pluginName](editorInstance);
-                    editorInstance.registerPlugin(pluginInstance);
-                } else {
-                    console.warn(`Plugin ${pluginName} not found in availablePlugins map.`);
-                }
-            });
-
-            // グローバルアクセス用 (デバッグや将来のプラグインで必要になる場合)
-            window.uotoEditor = editorInstance;
-        });
-    </script>
+    <script type="module" src="js/main.js"></script>
 
 </body>
 

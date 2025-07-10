@@ -17,7 +17,7 @@ body {
     display: flex;
     flex-direction: column;
     background-color: #f0f0f0;
-    height: 100vh;
+    /* height: 100vh; */ /* ツールバーの高さを考慮できていないため、この指定を削除 */
     width: 100%;
     align-items: stretch;
     border: 2px solid red; /* デバッグ用 */
@@ -65,46 +65,88 @@ button:hover {
 /* エディタ全体のラッパー */
 .editor-wrapper {
     flex: 1; /* 利用可能な残りのスペースをすべて埋める */
-    margin: 0;
-    border: 1px solid #ccc;
-    background-color: #fff;
     position: relative; /* 子要素のabsolute配置の基準 */
-    width: 100%; /* 親の幅いっぱいに広がるように */
     min-height: 0; /* flexboxの縮小問題を解決 */
     display: flex; /* 子要素をフレックスアイテムとして扱う */
-    flex-direction: column; /* 子要素を縦方向に並べる */
-    border: 2px solid blue; /* デバッグ用 */
+}
+
+/* 行番号 */
+.line-numbers {
+    width: 40px; /* 行番号の幅 */
+    background-color: #f0f0f0;
+    color: #888;
+    padding: 20px; /* エディタのパディングと合わせる */
+    text-align: right;
+    font-family: 'monospace', 'sans-serif';
+    font-size: 16px;
+    line-height: 1.5; /* エディタのline-heightと合わせる */
+    overflow-y: hidden; /* スクロールはさせない */
+    flex-shrink: 0; /* 縮まないようにする */
+    user-select: none; /* テキスト選択を無効に */
+}
+
+/* テキストエリアとプレビューのコンテナ */
+.editor-container {
+    flex: 1;
+    position: relative;
+    min-width: 0;
+}
+
+/* テキストエリアとプレビューの共通スタイル */
+#editor, #preview {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 20px;
+    border: none;
+    outline: none;
+    font-family: 'Yu Gothic', 'Meiryo', monospace, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    box-sizing: border-box;
+    background-color: transparent; /* 背景を透明に */
 }
 
 /* テキストエリア */
 #editor {
-    flex: 1; /* ラッパー内で利用可能なスペースを埋める */
-    width: 100%;
-    align-self: stretch;
-    font-family: 'Yu Gothic', 'Meiryo', monospace, sans-serif;
-    font-size: 16px;
-    padding: 20px;
-    border: none;
-    outline: none;
     resize: none;
-    line-height: 1.5;
-    margin: 0;
-    box-sizing: border-box;
-    min-width: 0;
+    z-index: 1; /* テキストエリアを手前に */
+    /* color: transparent; */ /* JSで制御するため削除 */
+    caret-color: black; /* カーソルだけは見えるように */
+}
+
+/* シンタックスハイライト有効時にテキストを透明にする */
+#editor.sinha-active {
+    color: transparent;
 }
 
 /* プレビューエリア */
 #preview {
-    flex: 1; /* 残りのスペースをすべて埋める */
-    padding: 20px;
-    border-top: 1px solid #ccc;
     overflow-y: auto;
-    background-color: #f9f9f9;
-    min-height: 0; /* flexアイテムの縮小問題を解決 */
-    font-family: 'Yu Gothic', 'Meiryo', monospace, sans-serif; /* エディタとフォントを合わせる */
-    font-size: 16px; /* エディタとフォントサイズを合わせる */
-    line-height: 1.5; /* エディタと行の高さを合わせる */
-    color: #333; /* 文字色を見やすく */
+    z-index: 0; /* プレビューを背後に */
+    pointer-events: none; /* クリックイベントを無効化 */
+    white-space: pre-wrap; /* テキストの折り返しを有効に */
+    word-wrap: break-word;
+}
+
+/* シンタックスハイライト用のpre/codeタグのスタイル調整 */
+#preview pre, #preview code {
+    margin: 0;
+    padding: 0;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    background: none;
+}
+
+/* 横書きモードのデフォルトパディング */
+#editor.horizontal-writing {
+    /* padding: 20px; */ /* 共通スタイルに移動 */
 }
 
 /* テキストエリアのスクロールバーのスタイル */

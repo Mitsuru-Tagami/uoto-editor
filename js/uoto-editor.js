@@ -13,7 +13,13 @@ class Editor {
         this.replaceAllBtn = document.getElementById(options.replaceAllBtnId);
         this.editorTitleElement = document.getElementById(options.editorTitleId);
 
-        this.isVerticalMode = true; // 初期状態は縦書き
+        this.lineNumberElement = document.getElementById(options.lineNumberId); // 行番号要素を追加
+        this.showLineNumbers = localStorage.getItem('showLineNumbers') === 'false' ? false : true; // 行番号の表示状態をlocalStorageから読み込む
+
+        this.toggleSinhaBtn = document.getElementById(options.toggleSinhaBtnId); // シンハONOFFボタンを追加
+        this.isSinhaEnabled = true; // シンハの有効状態
+
+        this.isVerticalMode = false; // 初期状態は横書きに変更
         this.lastFoundIndex = -1;
         this.events = {}; // イベントリスナーを格納するオブジェクト
 
@@ -39,6 +45,7 @@ class Editor {
     _setupEventListeners() {
         // this.editorTitleElement.addEventListener('click', this.toggleWritingMode.bind(this)); // プラグインに移動
         this.editorElement.addEventListener('input', this._handleEditorInput.bind(this));
+        this.editorElement.addEventListener('scroll', this.updateLineNumbers.bind(this)); // スクロールイベントを追加
         window.addEventListener('resize', this.updateEOFIndicator.bind(this));
 
         this.openBtn.addEventListener('click', () => this.fileInput.click());
@@ -49,20 +56,41 @@ class Editor {
         this.replaceBtn.addEventListener('click', this.replaceSelected.bind(this));
         this.replaceAllBtn.addEventListener('click', this.replaceAll.bind(this));
         this.searchInput.addEventListener('input', () => { this.lastFoundIndex = -1; });
+
+        // 行番号のクリックイベント
+        if (this.lineNumberElement) {
+            this.lineNumberElement.addEventListener('click', this.toggleLineNumbers.bind(this));
+        }
+
+        // シンハONOFFボタンのクリックイベント
+        if (this.toggleSinhaBtn) {
+            this.toggleSinhaBtn.addEventListener('click', this.toggleSinha.bind(this));
+        }
+
+        // モード変更時に行番号を更新
+        this.on('modeChanged', () => {
+            this.updateLineNumbers();
+        });
     }
 
     // 初期設定
     _initialSetup() {
         // 初期モード設定はプラグインに任せる
         this.updateEOFIndicator();
+        this.updateLineNumbers(); // 初期表示時に行番号を更新
+        // シンハONOFFボタンの初期表示を設定
+        if (this.toggleSinhaBtn) {
+            this.toggleSinhaBtn.textContent = this.isSinhaEnabled ? 'シンハON' : 'シンハOFF';
+        }
     }
 
     // コア機能
     // toggleWritingModeはプラグインに移動
 
     _handleEditorInput() {
-        this.previewElement.innerHTML = this.editorElement.value;
+        // this.previewElement.innerHTML = this.editorElement.value; // カクヨム記法プラグインがプレビューを更新するため、この行は不要
         this.updateEOFIndicator();
+        this.updateLineNumbers(); // テキスト変更時に行番号を更新
         this.emit('textChanged', this.editorElement.value);
     }
 
@@ -84,6 +112,7 @@ class Editor {
         reader.onload = (e) => {
             this.editorElement.value = e.target.result;
             this.updateEOFIndicator();
+            this.updateLineNumbers(); // ファイル読み込み時に行番号を更新
             this.emit('textChanged', this.editorElement.value);
         };
         reader.readAsText(file);
@@ -147,7 +176,8 @@ class Editor {
             this.lastFoundIndex = -1;
             this.updateEOFIndicator();
             this.emit('textChanged', this.editorElement.value);
-        } else {
+        }
+        else {
             alert('選択されているテキストが検索ワードと一致しません。');
         }
     }
@@ -166,16 +196,55 @@ class Editor {
             this.lastFoundIndex = -1;
             this.updateEOFIndicator();
             this.emit('textChanged', this.editorElement.value);
-        } else {
+        }
+        else {
             alert('置換する箇所が見つかりませんでした。');
         }
+    }
+
+    // 行番号の更新
+    updateLineNumbers() {
+        if (!this.lineNumberElement) {
+            return;
+        }
+
+        // 縦書きモードの場合は行番号を非表示にする
+        if (this.editorElement.classList.contains('vertical-writing')) {
+            this.lineNumberElement.style.display = 'none';
+            return;
+        }
+
+        if (this.showLineNumbers && this.editorElement.classList.contains('horizontal-writing')) {
+            this.lineNumberElement.style.display = 'block';
+            const text = this.editorElement.value;
+            const lines = text.split('\n');
+            let lineNumbersHtml = '';
+            for (let i = 1; i <= lines.length; i++) {
+                lineNumbersHtml += `<div>${i}</div>`;
+            }
+            this.lineNumberElement.innerHTML = lineNumbersHtml;
+
+            // 行番号のスクロール位置をエディタと同期
+            this.lineNumberElement.scrollTop = this.editorElement.scrollTop;
+        }
+        else {
+            this.lineNumberElement.style.display = 'none';
+        }
+    }
+
+    // 行番号の表示・非表示を切り替える
+    toggleLineNumbers() {
+        this.showLineNumbers = !this.showLineNumbers;
+        localStorage.setItem('showLineNumbers', this.showLineNumbers); // 状態をlocalStorageに保存
+        this.updateLineNumbers();
     }
 
     // プラグイン登録
     registerPlugin(plugin) {
         if (plugin && typeof plugin.init === 'function') {
             plugin.init(this);
-        } else {
+        }
+        else {
             console.warn('Invalid plugin: init method not found.');
         }
     }
@@ -192,6 +261,15 @@ class Editor {
     getCurrentMode() {
         return this.isVerticalMode ? 'vertical' : 'horizontal';
     }
+
+    // シンハの表示・非表示を切り替える
+    toggleSinha() {
+        this.isSinhaEnabled = !this.isSinhaEnabled;
+        console.log('シンハの有効状態:', this.isSinhaEnabled);
+        this.toggleSinhaBtn.textContent = this.isSinhaEnabled ? 'シンハON' : 'シンハOFF';
+        this.emit('sinhaToggled', this.isSinhaEnabled); // sinhaToggledイベントを発行
+        this.emit('textChanged', this.getTextContent()); // テキスト変更イベントを発行して再描画を促す
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -207,7 +285,9 @@ document.addEventListener('DOMContentLoaded', () => {
         findNextBtnId: 'find-next-btn',
         replaceBtnId: 'replace-btn',
         replaceAllBtnId: 'replace-all-btn',
-        editorTitleId: 'editor-title'
+        editorTitleId: 'editor-title',
+        lineNumberId: 'line-numbers',
+        toggleSinhaBtnId: 'toggle-sinha-btn' // シンハONOFFボタンのIDを追加
     });
 
     // グローバルアクセス用 (デバッグや将来のプラグインで必要になる場合)

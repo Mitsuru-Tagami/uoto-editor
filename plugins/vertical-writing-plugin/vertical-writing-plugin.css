@@ -1,5 +1,6 @@
 /* 縦書きモードのスタイル */
 #editor.vertical-writing {
+    box-sizing: border-box; /* はみ出し問題を解決する魔法の言葉よ */
     writing-mode: vertical-rl;
     -webkit-writing-mode: vertical-rl;
     -ms-writing-mode: tb-rl;
@@ -9,11 +10,34 @@
     overflow-x: auto; /* 縦書き時の横スクロール */
     overflow-y: hidden; /* 縦書き時の縦スクロールは不要 */
     word-break: normal;
-    padding-top: 0; /* 上部の余白をなくす */
-    padding-bottom: 40px; /* 下部の余白をしっかり確保 */
-    /* 20行分の高さに固定 (line-height * 20 + padding-top + padding-bottom) */
-    flex-basis: calc(1.5em * 20 + 40px); /* 0px top + 40px bottom */
+    /* 縦書きでは物理的な上が左、右が上、下が右、左が下に対応する */
+    /* そのため、物理的な下に余白を設けるには padding-right を使う */
+    padding: 1em;
+    padding-right: 2em; /* これで物理的な下に2文字分の余白ができる */
+
+    /* 18行分の高さに固定 (画面からはみ出さないように調整) */
+    flex-basis: calc(1.5em * 18 + 2em); /* padding-right */
     flex-shrink: 0; /* 縮まないようにする */
+}
+
+/* 縦書きモードのスクロールバー */
+#editor.vertical-writing::-webkit-scrollbar {
+    height: 20px; /* スクロールバーの当たり判定は大きいまま */
+}
+
+#editor.vertical-writing::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+#editor.vertical-writing::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+    border: 5px solid #f1f1f1; /* トラックと同じ色のボーダーで内側に余白を作る */
+}
+
+#editor.vertical-writing::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }
 
 /* 横書きモードのスタイル */
@@ -34,7 +58,7 @@
 
 /* 縦書きモードのスタイル (プレビュー) */
 #preview.vertical-writing {
-    display: block; /* 縦書きではプレビューを表示 */
+    /* display: block; */ /* カクヨム記法プラグインで制御するためコメントアウト */
     writing-mode: vertical-rl;
     -webkit-writing-mode: vertical-rl;
     -ms-writing-mode: tb-rl;
@@ -47,5 +71,5 @@
 
 /* 横書きモードのスタイル (プレビュー) */
 #preview.horizontal-writing {
-    display: none; /* 横書きではプレビューを非表示 */
+    /* display: block; */ /* カクヨム記法プラグインで制御するためコメントアウト */
 }
