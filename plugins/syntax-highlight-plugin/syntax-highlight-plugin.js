@@ -32,16 +32,22 @@ export class SyntaxHighlightPlugin {
         const previewElement = this.editor.getDisplayArea();
         const editorElement = this.editor.editorElement;
 
-        // 縦書きモードまたはシンハが無効な場合は、ハイライトを解除して非表示
-        if (this.editor.getCurrentMode() === 'vertical' || !this.editor.isSinhaEnabled) {
+        // シンハが無効な場合は、プレビューをクリアして非表示
+        if (!this.editor.isSinhaEnabled) {
+            previewElement.innerHTML = '';
             previewElement.style.display = 'none';
-            editorElement.style.color = ''; // テキストの透明化を解除
+            return;
+        }
+
+        // 縦書きモードの場合は、プレビューをクリアして非表示
+        if (this.editor.getCurrentMode() === 'vertical') {
+            previewElement.innerHTML = '';
+            previewElement.style.display = 'none';
             return;
         }
 
         // 横書きかつシンハが有効な場合
         previewElement.style.display = 'block';
-        editorElement.style.color = 'transparent'; // テキストを透明に
 
         // Prism.jsがロードされているか確認
         if (typeof Prism === 'undefined' || !Prism.languages.javascript) {

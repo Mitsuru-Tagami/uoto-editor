@@ -65,9 +65,12 @@ button:hover {
 /* エディタ全体のラッパー */
 .editor-wrapper {
     flex: 1; /* 利用可能な残りのスペースをすべて埋める */
-    position: relative; /* 子要素のabsolute配置の基準 */
     min-height: 0; /* flexboxの縮小問題を解決 */
     display: flex; /* 子要素をフレックスアイテムとして扱う */
+    flex-direction: row; /* PCでは左右に並べる */
+    width: 100%; /* 明示的に幅を100%に設定 */
+    border: 1px solid #ccc; /* 全体の枠線 */
+    background-color: #fff;
 }
 
 /* 行番号 */
@@ -75,61 +78,53 @@ button:hover {
     width: 40px; /* 行番号の幅 */
     background-color: #f0f0f0;
     color: #888;
-    padding: 20px; /* エディタのパディングと合わせる */
+    padding: 20px;
     text-align: right;
     font-family: 'monospace', 'sans-serif';
     font-size: 16px;
-    line-height: 1.5; /* エディタのline-heightと合わせる */
-    overflow-y: hidden; /* スクロールはさせない */
-    flex-shrink: 0; /* 縮まないようにする */
-    user-select: none; /* テキスト選択を無効に */
+    line-height: 1.5;
+    overflow-y: hidden;
+    flex-shrink: 0;
+    user-select: none;
 }
 
 /* テキストエリアとプレビューのコンテナ */
 .editor-container {
-    flex: 1;
-    position: relative;
-    min-width: 0;
-}
-
-/* テキストエリアとプレビューの共通スタイル */
-#editor, #preview {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 20px;
-    border: none;
-    outline: none;
-    font-family: 'Yu Gothic', 'Meiryo', monospace, sans-serif;
-    font-size: 16px;
-    line-height: 1.5;
-    box-sizing: border-box;
-    background-color: transparent; /* 背景を透明に */
+    flex: 1; /* 残りのスペースをすべて埋める */
+    display: flex; /* 子要素をフレックスアイテムとして扱う */
+    flex-direction: row; /* PCでは左右に並べる */
+    min-width: 0; /* flexアイテムの縮小問題を解決 */
 }
 
 /* テキストエリア */
 #editor {
+    flex: 1; /* 利用可能なスペースを埋める */
+    min-width: 0; /* flexアイテムの縮小問題を解決 */
+    font-family: 'Yu Gothic', 'Meiryo', monospace, sans-serif;
+    font-size: 16px;
+    padding: 20px;
+    border: none;
+    outline: none;
     resize: none;
-    z-index: 1; /* テキストエリアを手前に */
-    /* color: transparent; */ /* JSで制御するため削除 */
-    caret-color: black; /* カーソルだけは見えるように */
-}
-
-/* シンタックスハイライト有効時にテキストを透明にする */
-#editor.sinha-active {
-    color: transparent;
+    line-height: 1.5;
+    margin: 0;
+    box-sizing: border-box;
+    border-right: 1px solid #eee; /* エディタとプレビューの間の区切り線 */
+    border: 2px solid blue; /* デバッグ用 */
 }
 
 /* プレビューエリア */
 #preview {
+    flex: 1; /* 利用可能なスペースを埋める */
+    min-width: 0; /* flexアイテムの縮小問題を解決 */
+    padding: 20px;
     overflow-y: auto;
-    z-index: 0; /* プレビューを背後に */
-    pointer-events: none; /* クリックイベントを無効化 */
-    white-space: pre-wrap; /* テキストの折り返しを有効に */
-    word-wrap: break-word;
+    background-color: #f9f9f9;
+    font-family: 'Yu Gothic', 'Meiryo', monospace, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+    box-sizing: border-box;
 }
 
 /* シンタックスハイライト用のpre/codeタグのスタイル調整 */
@@ -144,54 +139,16 @@ button:hover {
     background: none;
 }
 
-/* 横書きモードのデフォルトパディング */
-#editor.horizontal-writing {
-    /* padding: 20px; */ /* 共通スタイルに移動 */
-}
-
-/* テキストエリアのスクロールバーのスタイル */
-#editor::-webkit-scrollbar {
-    width: 12px;
-    height: 12px;
-}
-
-#editor::-webkit-scrollbar-thumb {
-    background-color: #888;
-    border-radius: 6px;
-    border: 3px solid transparent;
-    background-clip: padding-box;
-}
-
-#editor::-webkit-scrollbar-track {
-    background-color: #f0f0f0;
-}
-
-/* EOF表示 */
-#eof-indicator {
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-    font-size: 12px;
-    color: #888;
-    pointer-events: none;
-}
-
-/* 作者情報固定表示 */
-.author-fixed-info {
-    position: fixed;
-    bottom: 30px; /* 下からの距離を増やす */
-    right: 30px; /* 右からの距離を増やす */
-    font-size: 0.7rem;
-    color: #aaa;
-    z-index: 1000; /* 他の要素の上に表示 */
-    text-align: right;
-}
-
-.author-fixed-info a {
-    color: #aaa;
-    text-decoration: none;
-}
-
-.author-fixed-info a:hover {
-    text-decoration: underline;
+/* モバイル対応: 画面幅が狭い場合は上下に分割 */
+@media (max-width: 768px) {
+    .editor-wrapper {
+        flex-direction: column; /* 上下に並べる */
+    }
+    .editor-container {
+        flex-direction: column; /* 上下に並べる */
+    }
+    #editor {
+        border-right: none; /* 左右の区切り線を削除 */
+        border-bottom: 1px solid #eee; /* 上下の区切り線を追加 */
+    }
 }
