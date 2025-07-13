@@ -32,22 +32,19 @@ export class SyntaxHighlightPlugin {
         const previewElement = this.editor.getDisplayArea();
         const editorElement = this.editor.editorElement;
 
-        // シンハが無効な場合は、プレビューをクリアして非表示
+        // シンハが無効な場合は、プレビューをクリア
         if (!this.editor.isSinhaEnabled) {
             previewElement.innerHTML = '';
-            previewElement.style.display = 'none';
             return;
         }
 
-        // 縦書きモードの場合は、プレビューをクリアして非表示
+        // 縦書きモードの場合は、プレビューをクリア
         if (this.editor.getCurrentMode() === 'vertical') {
             previewElement.innerHTML = '';
-            previewElement.style.display = 'none';
             return;
         }
 
         // 横書きかつシンハが有効な場合
-        previewElement.style.display = 'block';
 
         // Prism.jsがロードされているか確認
         if (typeof Prism === 'undefined' || !Prism.languages.javascript) {

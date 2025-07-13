@@ -41,11 +41,9 @@ class KakuyomuNotationPlugin {
             // 横書きモードの場合のみプレビューを生成
             let renderedHtml = this.parseAndRenderKakuyomu(text);
             this.previewElement.innerHTML = renderedHtml;
-            this.previewElement.style.display = 'block'; // プレビューを表示
         } else {
-            // 縦書きモードの場合、プレビューをクリアして非表示
+            // 縦書きモードの場合、プレビューをクリア
             this.previewElement.innerHTML = '';
-            this.previewElement.style.display = 'none'; // プレビューを非表示
         }
     }
 
