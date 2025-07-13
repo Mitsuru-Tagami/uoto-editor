@@ -21,12 +21,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     // モード変更時にプレビューの表示を調整
     editorInstance.on('modeChanged', (mode) => {
         console.log(`Mode changed to: ${mode}, hasPreviewPlugin: ${editorInstance.hasPreviewPlugin}`);
-        if (mode === 'vertical' && !editorInstance.hasPreviewPlugin) {
+        if (mode === 'vertical') {
             editorInstance.setPreviewVisibility(false);
-            console.log('Hiding preview.');
-        } else {
-            editorInstance.setPreviewVisibility(true);
-            console.log('Showing preview.');
+            console.log('Hiding preview in vertical mode.');
+        } else { // mode is 'horizontal'
+            if (editorInstance.hasPreviewPlugin) { // Only show if a preview plugin is enabled
+                editorInstance.setPreviewVisibility(true);
+                console.log('Showing preview in horizontal mode because a preview plugin is enabled.');
+            } else {
+                editorInstance.setPreviewVisibility(false); // No preview plugin enabled, hide it
+                console.log('Hiding preview in horizontal mode because no preview plugin is enabled.');
+            }
         }
     });
 
@@ -84,17 +89,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // モード変更時にプレビューの表示を調整
-    editorInstance.on('modeChanged', (mode) => {
-        console.log(`Mode changed to: ${mode}, hasPreviewPlugin: ${editorInstance.hasPreviewPlugin}`);
-        if (mode === 'vertical' && !editorInstance.hasPreviewPlugin) {
-            editorInstance.setPreviewVisibility(false);
-            console.log('Hiding preview.');
-        } else {
-            editorInstance.setPreviewVisibility(true);
-            console.log('Showing preview.');
-        }
-    });
 
     // グローバルアクセス用
     window.uotoEditor = editorInstance;

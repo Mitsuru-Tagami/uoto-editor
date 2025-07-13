@@ -38,6 +38,5 @@ export class VerticalWritingPlugin {
             this.editor.editorTitleElement.textContent = '魚兎エディタ (横書き)';
             this.editor.emit('modeChanged', 'horizontal');
         }
-        this.editor.updateEOFIndicator();
     }
 }
