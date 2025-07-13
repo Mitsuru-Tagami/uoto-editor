@@ -10,65 +10,130 @@
 
 ### 2.1. プラグイン設定ファイル (`config/plugins.js`)
 
-読み込むプラグインのリストは、`config/plugins.js` ファイルで管理します。
+読み込むプラグインのリストは、`config/plugins.js` ファイルで管理します。このファイルは、各プラグインの詳細な設定を持つオブジェクトの配列を `plugins` という名前でエクスポートします。
 
--   `pluginList` という配列に、有効にしたいプラグインの **クラス名** を文字列として列挙します。
--   このリストに追加したり、コメントアウトしたりするだけで、エディタで読み込むプラグインを制御できます。
+-   `name`: プラグインの名前（表示用）
+-   `className`: プラグインのクラス名
+-   `path`: プラグインのJavaScriptファイルのパス
+-   `cssPath`: プラグインのCSSファイルのパス（オプション）
+-   `enabled`: プラグインが有効かどうかを示すブール値
+-   `isCore`: コアプラグインかどうかを示すブール値（プラグインマネージャーで管理対象外とする場合など）
+-   `description`: プラグインの説明
+-   `uiElementId`: プラグインに関連するUI要素のID（オプション）
+-   `dependencies`: プラグインが依存するJavaScriptファイルのパスの配列（オプション）
 
 ```javascript
 // config/plugins.js
 
-export const pluginList = [
-    'VerticalWritingPlugin',    // 縦書き機能
-    'KakuyomuNotationPlugin', // カクヨム記法サポート
-    // 'SyntaxHighlightPlugin', // シンタックスハイライト（現在は無効）
+export const plugins = [
+    {
+        name: 'Plugin Manager',
+        className: 'PluginManagerPlugin',
+        path: '../plugins/plugin-manager/plugin-manager.js',
+        cssPath: '../plugins/plugin-manager/plugin-manager.css',
+        enabled: true,
+        isCore: true,
+        description: 'プラグインの有効/無効を管理します。',
+    },
+    {
+        name: 'Vertical Writing Plugin',
+        className: 'VerticalWritingPlugin',
+        path: '../plugins/vertical-writing-plugin/vertical-writing-plugin.js',
+        cssPath: '../plugins/vertical-writing-plugin/vertical-writing-plugin.css',
+        enabled: true,
+        description: 'エディタを縦書きモードに切り替えます。',
+    },
+    {
+        name: 'Kakuyomu Notation Plugin',
+        className: 'KakuyomuNotationPlugin',
+        path: '../plugins/kakuyomu-notation-plugin/kakuyomu-notation-plugin.js',
+        cssPath: '../plugins/kakuyomu-notation-plugin/kakuyomu-notation-plugin.css',
+        enabled: true,
+        description: 'カクヨム記法をプレビューに反映します。',
+    },
+    {
+        name: 'Syntax Highlight Plugin',
+        className: 'SyntaxHighlightPlugin',
+        path: '../plugins/syntax-highlight-plugin/syntax-highlight-plugin.js',
+        cssPath: '../plugins/syntax-highlight-plugin/prism.min.css',
+        enabled: true,
+        description: 'コードのシンタックスハイライトを有効にします。',
+        uiElementId: 'toggle-sinha-btn',
+        dependencies: [
+            '../plugins/syntax-highlight-plugin/prism.min.js',
+            '../plugins/syntax-highlight-plugin/prism-javascript.min.js'
+        ]
+    }
 ];
 ```
 
-### 2.2. プラグインの読み込みと登録 (`index.html`)
+### 2.2. プラグインの読み込みと登録 (`js/main.js`)
 
-`index.html` の末尾にある `<script type="module">` ブロックで、プラグインの読み込みと登録が行われます。
+プラグインの読み込みと登録は、`js/main.js` が担当します。`js/main.js` は `config/plugins.js` の設定と `localStorage` に保存されたユーザーの状態に基づいて、動的にプラグインをロードし、エディタに登録します。
 
-1.  **プラグインクラスのインポート:**
-    まず、利用する可能性のある全てのプラグインのクラスを、個別に `import` します。
+1.  **プラグイン設定の読み込み:**
+    `config/plugins.js` から `plugins` 配列を読み込みます。
 
-2.  **利用可能プラグインのマップ作成:**
-    インポートしたプラグインクラスを、クラス名をキーとするマップ (`availablePlugins`) に格納します。
+2.  **LocalStorageからの状態適用:**
+    `localStorage` に保存されているユーザーのプラグイン有効/無効状態を読み込み、`plugins` 配列の設定に適用します。
 
-3.  **動的な登録処理:**
-    `config/plugins.js` から `pluginList` を読み込み、そのリストに含まれる名前のプラグインだけを `availablePlugins` マップから探し出し、インスタンス化してエディタに登録します。
+3.  **動的なロードと登録:**
+    `plugins` 配列をループし、`enabled: true` となっているプラグインについて、そのJavaScriptファイルとCSSファイルを動的に読み込み、エディタに登録します。
 
-```html
-<!-- index.html の一部 -->
-<script type="module">
-    // 1. 設定ファイルと、利用する可能性のあるプラグインをすべてインポート
-    import { pluginList } from './config/plugins.js';
-    import { VerticalWritingPlugin } from './plugins/vertical-writing-plugin/vertical-writing-plugin.js';
-    import { KakuyomuNotationPlugin } from './plugins/kakuyomu-notation-plugin/kakuyomu-notation-plugin.js';
+```javascript
+// js/main.js の一部
 
-    // 2. 利用可能なプラグインのマップを作成
-    const availablePlugins = {
-        'VerticalWritingPlugin': VerticalWritingPlugin,
-        'KakuyomuNotationPlugin': KakuyomuNotationPlugin,
-        // 他のプラグインもここに追加
-    };
+import { plugins } from '../config/plugins.js';
 
-    document.addEventListener('DOMContentLoaded', () => {
-        const editorInstance = new Editor({ /* ... */ });
+document.addEventListener('DOMContentLoaded', async () => {
+    const editorInstance = new Editor({ /* ... options ... */ });
 
-        // 3. 設定リストに基づき、プラグインを動的に登録
-        pluginList.forEach(pluginName => {
-            if (availablePlugins[pluginName]) {
-                const pluginInstance = new availablePlugins[pluginName](editorInstance);
-                editorInstance.registerPlugin(pluginInstance);
-            } else {
-                console.warn(`Plugin ${pluginName} not found.`);
-            }
-        });
-
-        window.uotoEditor = editorInstance;
+    // LocalStorageからプラグインの状態を読み込み、適用する
+    const savedStates = JSON.parse(localStorage.getItem('uotoEditorPluginStates')) || {};
+    plugins.forEach(pluginConfig => {
+        if (savedStates[pluginConfig.name] !== undefined) {
+            pluginConfig.enabled = savedStates[pluginConfig.name];
+        }
     });
-</script>
+
+    // 動的にプラグインをロードして登録する
+    for (const pluginConfig of plugins) {
+        if (pluginConfig.enabled) {
+            try {
+                // CSSを動的に読み込み
+                if (pluginConfig.cssPath) {
+                    const link = document.createElement('link');
+                    link.rel = 'stylesheet';
+                    link.href = pluginConfig.cssPath;
+                    document.head.appendChild(link);
+                }
+
+                // JavaScriptモジュールを動的にインポート
+                if (pluginConfig.dependencies && pluginConfig.dependencies.length > 0) {
+                    for (const depPath of pluginConfig.dependencies) {
+                        const script = document.createElement('script');
+                        script.src = depPath;
+                        script.async = false;
+                        document.head.appendChild(script);
+                        await new Promise(resolve => script.onload = resolve);
+                    }
+                }
+
+                const module = await import(pluginConfig.path);
+                const PluginClass = module[pluginConfig.className];
+
+                if (PluginClass) {
+                    const pluginInstance = new PluginClass(editorInstance);
+                    editorInstance.registerPlugin(pluginInstance);
+                }
+            } catch (error) {
+                console.error(`Failed to load plugin: ${pluginConfig.name}`, error);
+            }
+        }
+    }
+
+    // ... その他の初期化処理 ...
+});
 ```
 
 ### 2.3. プラグインのファイル構造

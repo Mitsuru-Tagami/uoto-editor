@@ -4,57 +4,33 @@
 
 ### 1. プラグインの有効化・無効化
 
-プラグインの有効・無効は、`config/plugins.js` ファイルで一元管理します。
+プラグインの有効・無効は、主に以下の2つの方法で管理されます。
 
-1.  **`config/plugins.js` を編集する:**
-    `uoto_editor/config/plugins.js` ファイルを開きます。
-    `pluginList` という配列の中に、有効にしたいプラグインの **クラス名** が文字列で列挙されています。
+1.  **プラグインマネージャー（推奨）**:
+    エディタのUI上にある「プラグイン管理」ボタンをクリックすると、プラグインマネージャーのモーダルウィンドウが開きます。ここで各プラグインのチェックボックスを操作し、「保存」ボタンをクリックすることで、プラグインの有効・無効を切り替えることができます。この設定は `localStorage` に保存され、次回エディタ起動時に自動的に適用されます。
 
-2.  **有効化する場合:**
-    無効になっているプラグイン（行頭に `//` が付いているもの）があれば、その `//` を削除します。
+2.  **`config/plugins.js` を直接編集する**:
+    開発者向けの方法です。`uoto_editor/config/plugins.js` ファイルを開き、各プラグインの設定オブジェクトにある `enabled` プロパティの値を `true` または `false` に変更します。この変更は、`localStorage` の設定よりも優先されます。
 
-3.  **無効化する場合:**
-    有効になっているプラグインの行頭に `//` を追加して、その行をコメントアウトします。
-
-**編集例:**
+**`config/plugins.js` の編集例:**
 ```javascript
-// config/plugins.js
+// config/plugins.js (抜粋)
 
-export const pluginList = [
-    'VerticalWritingPlugin',    // 縦書きプラグイン（有効）
-    'KakuyomuNotationPlugin', // カクヨム記法プラグイン（有効）
-    // 'SyntaxHighlightPlugin', // シンタックスハイライトプラグイン（無効）
+export const plugins = [
+    {
+        name: 'Vertical Writing Plugin',
+        enabled: true, // 有効にする場合
+        // ...
+    },
+    {
+        name: 'Kakuyomu Notation Plugin',
+        enabled: false, // 無効にする場合
+        // ...
+    },
 ];
 ```
 上の例では、`VerticalWritingPlugin` と `KakuyomuNotationPlugin` が有効になり、`SyntaxHighlightPlugin` は無効になります。
 
-### 2. プラグイン利用の前提条件
+### 2. プラグインの読み込みと登録
 
-`config/plugins.js` でプラグインを有効にするには、そのプラグインが `index.html` で正しく読み込まれている必要があります。
-
-1.  **プラグインファイルの読み込み (`index.html`):**
-    `index.html` の中で、利用したいプラグインのJavaScriptファイルが `<script type="module">` タグで読み込まれていることを確認してください。
-
-    ```html
-    <!-- プラグインのJSファイルを読み込む -->
-    <script type="module" src="plugins/vertical-writing-plugin/vertical-writing-plugin.js"></script>
-    <script type="module" src="plugins/kakuyomu-notation-plugin/kakuyomu-notation-plugin.js"></script>
-    ```
-
-2.  **プラグイン登録マップへの追加 (`index.html`):**
-    同じく `index.html` の中の `<script type="module">` ブロックで、プラグインのクラスが `import` され、`availablePlugins` マップに追加されていることを確認してください。
-
-    ```javascript
-    // 利用するプラグインのクラスをインポート
-    import { VerticalWritingPlugin } from './plugins/vertical-writing-plugin/vertical-writing-plugin.js';
-    import { KakuyomuNotationPlugin } from './plugins/kakuyomu-notation-plugin/kakuyomu-notation-plugin.js';
-
-    // 利用可能なプラグインのマップ
-    const availablePlugins = {
-        'VerticalWritingPlugin': VerticalWritingPlugin,
-        'KakuyomuNotationPlugin': KakuyomuNotationPlugin,
-        // 新しいプラグインはここに追加
-    };
-    ```
-
-通常、新しいプラグインを追加する場合にのみ `index.html` の編集が必要になります。日常的な有効・無効の切り替えは `config/plugins.js` の編集だけで完結します。
+プラグインの読み込みと登録は、`js/main.js` が `config/plugins.js` の設定と `localStorage` に保存されたユーザーの状態に基づいて動的に行います。ユーザーが新しいプラグインを追加した場合、`config/plugins.js` にそのプラグインの設定を追加するだけで、自動的に読み込まれるようになっています。

@@ -52,8 +52,7 @@ export class MyAwesomePlugin {
 
 #### 3.1. プラグインの登録
 
-プラグインの登録は `index.html` で行われます。詳細は `plugin_management.md` を参照してください。
-`Editor` インスタンスの `registerPlugin` メソッドが内部で呼び出され、プラグインの `init` メソッドが実行されます。
+プラグインの登録は、`js/main.js` が `config/plugins.js` の設定と `localStorage` に保存されたユーザーの状態に基づいて動的に行います。`Editor` インスタンスの `registerPlugin` メソッドが内部で呼び出され、プラグインの `init` メソッドが実行されます。詳細については、`proposals/plugin_management.md` を参照してください。
 
 #### 3.2. イベントシステム
 
@@ -77,54 +76,7 @@ export class MyAwesomePlugin {
 
 ### 4. プラグインの利用
 
-プラグインの有効化・無効化は `config/plugins.js` で行い、実際の読み込みと登録は `index.html` で設定します。詳細な手順は `plugin_management.md` を参照してください。
-
-**`index.html` での読み込みと登録の例:**
-```html
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <!-- ... CSSなどの読み込み ... -->
-    <link rel="stylesheet" href="css/uoto-editor.css">
-    <link rel="stylesheet" href="plugins/vertical-writing-plugin/vertical-writing-plugin.css">
-</head>
-<body>
-    <!-- ... エディタのHTML構造 ... -->
-
-    <!-- コアスクリプト -->
-    <script src="js/uoto-editor.js"></script>
-
-    <!-- プラグインのスクリプト (type="module"で読み込む) -->
-    <script type="module" src="plugins/vertical-writing-plugin/vertical-writing-plugin.js"></script>
-    <script type="module" src="plugins/kakuyomu-notation-plugin/kakuyomu-notation-plugin.js"></script>
-
-    <!-- プラグイン登録処理 -->
-    <script type="module">
-        import { pluginList } from './config/plugins.js';
-        import { VerticalWritingPlugin } from './plugins/vertical-writing-plugin/vertical-writing-plugin.js';
-        import { KakuyomuNotationPlugin } from './plugins/kakuyomu-notation-plugin/kakuyomu-notation-plugin.js';
-
-        const availablePlugins = {
-            'VerticalWritingPlugin': VerticalWritingPlugin,
-            'KakuyomuNotationPlugin': KakuyomuNotationPlugin,
-        };
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const editorInstance = new Editor({ /* ... options ... */ });
-
-            pluginList.forEach(pluginName => {
-                if (availablePlugins[pluginName]) {
-                    const pluginInstance = new availablePlugins[pluginName](editorInstance);
-                    editorInstance.registerPlugin(pluginInstance);
-                }
-            });
-
-            window.uotoEditor = editorInstance;
-        });
-    </script>
-</body>
-</html>
-```
+プラグインの有効化・無効化は `config/plugins.js` で行い、実際の読み込みと登録は `js/main.js` が担当します。ユーザーがプラグインマネージャーを通じて行った変更は `localStorage` に保存され、次回の起動時に反映されます。詳細な手順は `proposals/plugin_management.md` を参照してください。
 
 ---
 
