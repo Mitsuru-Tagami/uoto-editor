@@ -5,11 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>魚兎エディタ</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <!-- Author: Mitsuru Tagami (mitsuru-tagami@island.dti.ne.jp) -->
     <link rel="stylesheet" href="css/uoto-editor.css">
-    <!-- Prism.js (シンタックスハイライト用) -->
-    <link href="plugins/syntax-highlight-plugin/prism.min.css" rel="stylesheet" />
-</head>
+    <!-- Author: Mitsuru Tagami (mitsuru-tagami@island.dti.ne.jp) -->
+    </head>
 <body>
 
     <div class="header">
@@ -20,6 +18,7 @@
         <button id="open-btn">ファイルを開く</button>
         <button id="save-btn">ファイルに保存</button>
         <button id="toggle-sinha-btn">シンハONOFF</button>
+        <button id="plugin-manager-btn">プラグイン管理</button>
         <input type="file" id="file-input" accept=".txt" style="display: none;">
 
         <input type="text" id="search-input" placeholder="検索ワード" style="margin-left: 20px; padding: 5px;">
@@ -51,16 +50,8 @@
 2025年7月8日 仕様を大幅に変更し、プラグイン仕様書とプラグイン管理ドキュメントを追加しました。
 </textarea>
             <div id="preview"></div>
-            <div id="eof-indicator">EOF</div>
         </div>
     </div>
-
-    <!-- Prism.js (シンタックスハイライト用) -->
-    <script src="plugins/syntax-highlight-plugin/prism.min.js"></script>
-    <script src="plugins/syntax-highlight-plugin/prism-javascript.min.js"></script>
-    <script src="plugins/syntax-highlight-plugin/prism-markup.min.js"></script>
-    <script src="plugins/syntax-highlight-plugin/prism-css.min.js"></script>
-    <script src="plugins/syntax-highlight-plugin/prism-markdown.min.js"></script>
 
     <script src="js/uoto-editor.js"></script>
     <script type="module" src="js/main.js"></script>

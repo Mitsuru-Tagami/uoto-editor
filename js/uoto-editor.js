@@ -2,7 +2,6 @@ class Editor {
     constructor(options) {
         this.editorElement = document.getElementById(options.editorId);
         this.previewElement = document.getElementById(options.previewId);
-        this.eofIndicatorElement = document.getElementById(options.eofIndicatorId);
         this.openBtn = document.getElementById(options.openBtnId);
         this.saveBtn = document.getElementById(options.saveBtnId);
         this.fileInput = document.getElementById(options.fileInputId);
@@ -22,6 +21,7 @@ class Editor {
         this.isVerticalMode = false; // 初期状態は横書きに変更
         this.lastFoundIndex = -1;
         this.events = {}; // イベントリスナーを格納するオブジェクト
+        this.hasPreviewPlugin = false; // プレビューを使用するプラグインが有効かどうか
 
         this._setupEventListeners();
         this._initialSetup();
@@ -41,12 +41,22 @@ class Editor {
         }
     }
 
+    // プレビューの表示/非表示を切り替える
+    setPreviewVisibility(visible) {
+        if (visible) {
+            this.previewElement.style.display = '';
+            this.previewElement.style.flex = '1'; // 再表示時にflexを元に戻す
+        } else {
+            this.previewElement.style.display = 'none';
+            this.previewElement.style.flex = '0'; // 非表示時にflexを0にする
+        }
+    }
+
     // イベントリスナーの設定
     _setupEventListeners() {
         // this.editorTitleElement.addEventListener('click', this.toggleWritingMode.bind(this)); // プラグインに移動
         this.editorElement.addEventListener('input', this._handleEditorInput.bind(this));
         this.editorElement.addEventListener('scroll', this.updateLineNumbers.bind(this)); // スクロールイベントを追加
-        window.addEventListener('resize', this.updateEOFIndicator.bind(this));
 
         this.openBtn.addEventListener('click', () => this.fileInput.click());
         this.fileInput.addEventListener('change', this._handleFileInputChange.bind(this));
@@ -76,11 +86,10 @@ class Editor {
     // 初期設定
     _initialSetup() {
         // 初期モード設定はプラグインに任せる
-        this.updateEOFIndicator();
         this.updateLineNumbers(); // 初期表示時に行番号を更新
         // シンハONOFFボタンの初期表示を設定
         if (this.toggleSinhaBtn) {
-            this.toggleSinhaBtn.textContent = this.isSinhaEnabled ? 'シンハON' : 'シンハOFF';
+            this.toggleSinhaBtn.textContent = this.isSinhaEnabled ? 'シンタックスハイライトON' : 'シンタックスハイライトOFF';
         }
     }
 
@@ -89,20 +98,8 @@ class Editor {
 
     _handleEditorInput() {
         // this.previewElement.innerHTML = this.editorElement.value; // カクヨム記法プラグインがプレビューを更新するため、この行は不要
-        this.updateEOFIndicator();
         this.updateLineNumbers(); // テキスト変更時に行番号を更新
         this.emit('textChanged', this.editorElement.value);
-    }
-
-    updateEOFIndicator() {
-        const hasVerticalScrollbar = this.editorElement.scrollHeight > this.editorElement.clientHeight;
-        const hasHorizontalScrollbar = this.editorElement.scrollWidth > this.editorElement.clientWidth;
-
-        if (this.editorElement.value === '' || (!hasVerticalScrollbar && !hasHorizontalScrollbar)) {
-            this.eofIndicatorElement.style.display = 'block';
-        } else {
-            this.eofIndicatorElement.style.display = 'none';
-        }
     }
 
     _handleFileInputChange(event) {
@@ -111,7 +108,6 @@ class Editor {
         const reader = new FileReader();
         reader.onload = (e) => {
             this.editorElement.value = e.target.result;
-            this.updateEOFIndicator();
             this.updateLineNumbers(); // ファイル読み込み時に行番号を更新
             this.emit('textChanged', this.editorElement.value);
         };
@@ -202,6 +198,19 @@ class Editor {
         }
     }
 
+    // プラグイン設定を保存する (Node.jsのAPIを呼び出す)
+    async savePluginSettings(newSettings) {
+        try {
+            // fs-extraの代わりに、UotoEditorが提供するAPIを呼び出す想定
+            // このAPIはメインプロセスでファイルの書き込みを行う
+            await window.uotoEditorAPI.updatePluginConfig(newSettings);
+            alert('プラグイン設定を保存しました。アプリケーションを再起動すると反映されます。');
+        } catch (error) {
+            console.error('プラグイン設定の保存に失敗しました:', error);
+            alert('エラーが発生し、プラグイン設定を保存できませんでした。');
+        }
+    }
+
     // 行番号の更新
     updateLineNumbers() {
         if (!this.lineNumberElement) {
@@ -266,7 +275,7 @@ class Editor {
     toggleSinha() {
         this.isSinhaEnabled = !this.isSinhaEnabled;
         console.log('シンハの有効状態:', this.isSinhaEnabled);
-        this.toggleSinhaBtn.textContent = this.isSinhaEnabled ? 'シンハON' : 'シンハOFF';
+        this.toggleSinhaBtn.textContent = this.isSinhaEnabled ? 'シンタックスハイライトON' : 'シンタックスハイライトOFF';
         this.emit('sinhaToggled', this.isSinhaEnabled); // sinhaToggledイベントを発行
         this.emit('textChanged', this.getTextContent()); // テキスト変更イベントを発行して再描画を促す
     }
@@ -276,7 +285,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const editorInstance = new Editor({
         editorId: 'editor',
         previewId: 'preview',
-        eofIndicatorId: 'eof-indicator',
         openBtnId: 'open-btn',
         saveBtnId: 'save-btn',
         fileInputId: 'file-input',

@@ -64,7 +64,7 @@ button:hover {
 
 /* エディタ全体のラッパー */
 .editor-wrapper {
-    flex: 1; /* 利用可能な残りのスペースをすべて埋める */
+    height: 500px; /* エディタの固定高さ */
     min-height: 0; /* flexboxの縮小問題を解決 */
     display: flex; /* 子要素をフレックスアイテムとして扱う */
     flex-direction: row; /* PCでは左右に並べる */
@@ -113,6 +113,10 @@ button:hover {
     border: 2px solid blue; /* デバッグ用 */
 }
 
+#editor.vertical-writing {
+    width: 100%;
+}
+
 /* プレビューエリア */
 #preview {
     flex: 1; /* 利用可能なスペースを埋める */
@@ -125,6 +129,10 @@ button:hover {
     line-height: 1.5;
     color: #333;
     box-sizing: border-box;
+}
+
+#preview.vertical-writing {
+    width: 100%;
 }
 
 /* シンタックスハイライト用のpre/codeタグのスタイル調整 */

@@ -20,25 +20,7 @@
     flex-shrink: 0; /* 縮まないようにする */
 }
 
-/* 縦書きモードのスクロールバー */
-#editor.vertical-writing::-webkit-scrollbar {
-    height: 20px; /* スクロールバーの当たり判定は大きいまま */
-}
 
-#editor.vertical-writing::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 10px;
-}
-
-#editor.vertical-writing::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 10px;
-    border: 5px solid #f1f1f1; /* トラックと同じ色のボーダーで内側に余白を作る */
-}
-
-#editor.vertical-writing::-webkit-scrollbar-thumb:hover {
-    background: #555;
-}
 
 /* 横書きモードのスタイル */
 #editor.horizontal-writing {
