@@ -28,9 +28,13 @@ export const plugins = [
         name: 'Syntax Highlight Plugin',
         className: 'SyntaxHighlightPlugin',
         path: '../plugins/syntax-highlight-plugin/syntax-highlight-plugin.js',
-        cssPath: null,
+        cssPath: '../plugins/syntax-highlight-plugin/prism.min.css',
         enabled: true,
         description: 'コードのシンタックスハイライトを有効にします。',
         uiElementId: 'toggle-sinha-btn',
+        dependencies: [
+            '../plugins/syntax-highlight-plugin/prism.min.js',
+            '../plugins/syntax-highlight-plugin/prism-javascript.min.js'
+        ]
     }
 ];
