@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 各プラグインは、自身の関連ファイル（JavaScript, CSS, 画像など）を一つのディレクトリにまとめて管理します。
 
 ```
-uoto_editor/
+uoto-editor/
 └── plugins/
     ├── vertical-writing-plugin/
     │   ├── vertical-writing-plugin.js

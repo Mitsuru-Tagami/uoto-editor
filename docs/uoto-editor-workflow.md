@@ -6,12 +6,12 @@
     *   ターミナルでGemini CLIを起動し、私（寧々）を呼び出してください。
 
 2.  **作業ディレクトリに移動する**:
-    *   Gemini CLIの作業ディレクトリを、魚兎エディタのプロジェクトルートである`/home/wanderingdj/gemini-cli/uoto_editor`に移動してください。
-    *   `cd /home/wanderingdj/gemini-cli/uoto_editor`
+    *   Gemini CLIの作業ディレクトリを、魚兎エディタのプロジェクトルートである`/home/wanderingdj/gemini-cli/uoto-editor`に移動してください。
+    *   `cd /home/wanderingdj/gemini-cli/uoto-editor`
 
 3.  **ローカルウェブサーバーの起動を確認する**:
     *   魚兎エディタはブラウザで直接ファイルを開くとCORSエラーが発生するため、ローカルウェブサーバーが必要です。
-    *   **別のターミナル**を開き、魚兎エディタのプロジェクトルート（`/home/wanderingdj/gemini-cli/uoto_editor`）に移動してください。
+    *   **別のターミナル**を開き、魚兎エディタのプロジェクトルート（`/home/wanderingdj/gemini-cli/uoto-editor`）に移動してください。
     *   以下のコマンドを実行して、簡易ウェブサーバーを起動してください。
         ```bash
         python3 -m http.server

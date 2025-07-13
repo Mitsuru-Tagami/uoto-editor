@@ -12,7 +12,7 @@
 
 ### 現在のファイル構造（リファクタリング後の結果）
 ```
-uoto_editor/
+uoto-editor/
 └── plugins/
     ├── vertical-writing-plugin/
     │   ├── vertical-writing-plugin.js
@@ -26,7 +26,7 @@ uoto_editor/
 ### 実施したステップ
 
 1.  **新しいディレクトリの作成:**
-    `uoto_editor/plugins/` ディレクトリを作成し、その下に各プラグイン名のディレクトリを作成した。
+    `uoto-editor/plugins/` ディレクトリを作成し、その下に各プラグイン名のディレクトリを作成した。
 2.  **ファイルの移動:**
     既存の `js/plugins/*.js` ファイルを対応する `plugins/*/` へ移動した。
     既存の `css/plugins/*.css` ファイルを対応する `plugins/*/` へ移動した。
