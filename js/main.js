@@ -133,4 +133,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
     });
+
+    // Syntax Highlight Plugin の有効状態を editorInstance.isSinhaEnabled に反映
+    const syntaxHighlightPluginConfig = plugins.find(p => p.name === 'Syntax Highlight Plugin');
+    if (syntaxHighlightPluginConfig) {
+        editorInstance.isSinhaEnabled = syntaxHighlightPluginConfig.enabled;
+        // シンハONOFFボタンのテキストも更新
+        const toggleSinhaBtn = document.getElementById('toggle-sinha-btn');
+        if (toggleSinhaBtn) {
+            toggleSinhaBtn.textContent = editorInstance.isSinhaEnabled ? 'シンタックスハイライトON' : 'シンタックスハイライトOFF';
+        }
+    }
 });

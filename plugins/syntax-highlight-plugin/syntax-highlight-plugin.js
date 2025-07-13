@@ -51,12 +51,16 @@ export class SyntaxHighlightPlugin {
 
         // Prism.jsがロードされているか確認
         if (typeof Prism === 'undefined' || !Prism.languages.javascript) {
+            console.log('Prism.js or javascript language not loaded.');
             previewElement.innerText = text; // Prismがなければプレーンテキストを表示
             return;
         }
 
         const highlightedHtml = Prism.highlight(text, Prism.languages.javascript, 'javascript');
+        console.log('Highlighted HTML:', highlightedHtml);
         previewElement.innerHTML = `<pre><code class="language-javascript">${highlightedHtml}</code></pre>`;
+        console.log('Preview element innerHTML after update:', previewElement.innerHTML);
+        console.log('Preview element display style after update:', previewElement.style.display);
 
         // スクロール位置を同期
         editorElement.addEventListener('scroll', () => {

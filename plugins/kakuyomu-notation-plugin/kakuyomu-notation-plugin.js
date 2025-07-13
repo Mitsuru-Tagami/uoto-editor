@@ -35,22 +35,7 @@ class KakuyomuNotationPlugin {
     }
 
     updatePreview(text) {
-        // シンハが有効な場合は、カクヨム記法プラグインはプレビューを更新しない
-        if (this.editor.isSinhaEnabled) {
-            return;
-        }
-        // console.log('KakuyomuNotationPlugin: updatePreview called. Current mode:', this.editor.getCurrentMode()); // デバッグ用ログを削除
-        if (this.editor.getCurrentMode() === 'horizontal') {
-            // 横書きモードの場合のみプレビューを生成
-            let renderedHtml = this.parseAndRenderKakuyomu(text);
-            this.previewElement.innerHTML = renderedHtml;
-            this.previewElement.style.display = 'block'; // プレビューを表示
-        } else {
-            // 縦書きモードの場合、プレビューをクリアして非表示
-            this.previewElement.innerHTML = '';
-            this.previewElement.style.display = 'none'; // プレビューを非表示
-        }
-    }
+        console.log('KakuyomuNotationPlugin: updatePreview called. isSinhaEnabled:', this.editor.isSinhaEnabled);
         // console.log('KakuyomuNotationPlugin: updatePreview called. Current mode:', this.editor.getCurrentMode()); // デバッグ用ログを削除
         if (this.editor.getCurrentMode() === 'horizontal') {
             // 横書きモードの場合のみプレビューを生成
