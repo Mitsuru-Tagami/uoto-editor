@@ -157,3 +157,9 @@ button:hover {
         border-bottom: 1px solid #eee; /* 上下の区切り線を追加 */
     }
 }
+
+/* 縦書きモード時のプレビューを強制的に非表示にする */
+#preview.vertical-writing {
+    display: none !important;
+    flex: 0 !important;
+}

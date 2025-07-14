@@ -35,6 +35,7 @@ class KakuyomuNotationPlugin {
     }
 
     updatePreview(text) {
+        debugger;
         console.log('KakuyomuNotationPlugin: updatePreview called. isSinhaEnabled:', this.editor.isSinhaEnabled);
         // console.log('KakuyomuNotationPlugin: updatePreview called. Current mode:', this.editor.getCurrentMode()); // デバッグ用ログを削除
         if (this.editor.getCurrentMode() === 'horizontal') {

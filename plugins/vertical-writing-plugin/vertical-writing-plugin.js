@@ -28,12 +28,12 @@ export class VerticalWritingPlugin {
             editorElement.classList.add('vertical-writing');
             previewElement.classList.remove('horizontal-writing');
             previewElement.classList.add('vertical-writing');
+            this.editor.editorWrapperElement.classList.add('vertical-mode'); // ラッパーにvertical-modeクラスを追加
             this.editor.editorTitleElement.textContent = '魚兎エディタ (縦書き)';
             this.editor.emit('modeChanged', 'vertical');
         } else {
             this.editor.editorElement.classList.remove('vertical-writing');
             this.editor.editorElement.classList.add('horizontal-writing');
-            this.editor.previewElement.style.display = 'block'; // 横書きモードではプレビューを表示
             this.editor.editorWrapperElement.classList.remove('vertical-mode'); // ラッパーからvertical-modeクラスを削除
             this.editor.emit('modeChanged', 'horizontal');
         }

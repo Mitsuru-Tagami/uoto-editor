@@ -15,7 +15,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         replaceAllBtnId: 'replace-all-btn',
         editorTitleId: 'editor-title',
         lineNumberId: 'line-numbers',
-        toggleSinhaBtnId: 'toggle-sinha-btn'
+        toggleSinhaBtnId: 'toggle-sinha-btn',
+        editorWrapperId: 'editor-wrapper'
     });
 
     // モード変更時にプレビューの表示を調整
