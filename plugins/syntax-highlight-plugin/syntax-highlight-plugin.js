@@ -56,6 +56,13 @@ export class SyntaxHighlightPlugin {
         const highlightedHtml = Prism.highlight(text, Prism.languages.javascript, 'javascript');
         console.log('Highlighted HTML:', highlightedHtml);
         previewElement.innerHTML = `<pre><code class="language-javascript">${highlightedHtml}</code></pre>`;
+
+        // Prismによって自動的に付与される可能性のある line-numbers クラスを強制的に削除し、
+        // プレビューエリアには行番号が表示されないようにする
+        const preElement = previewElement.querySelector('pre');
+        if (preElement) {
+            preElement.classList.remove('line-numbers');
+        }
         console.log('Preview element innerHTML after update:', previewElement.innerHTML);
         console.log('Preview element display style after update:', previewElement.style.display);
 

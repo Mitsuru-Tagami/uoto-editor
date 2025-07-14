@@ -3,7 +3,7 @@ export const plugins = [
         name: 'Plugin Manager',
         className: 'PluginManagerPlugin',
         path: '../plugins/plugin-manager/plugin-manager.js',
-        cssPath: '../plugins/plugin-manager/plugin-manager.css',
+        cssPath: 'plugins/plugin-manager/plugin-manager.css',
         enabled: true,
         isCore: true,
         description: 'プラグインの有効/無効を管理します。',
@@ -12,7 +12,7 @@ export const plugins = [
         name: 'Vertical Writing Plugin',
         className: 'VerticalWritingPlugin',
         path: '../plugins/vertical-writing-plugin/vertical-writing-plugin.js',
-        cssPath: '../plugins/vertical-writing-plugin/vertical-writing-plugin.css',
+        cssPath: 'plugins/vertical-writing-plugin/vertical-writing-plugin.css',
         enabled: true,
         description: 'エディタを縦書きモードに切り替えます。',
     },
@@ -20,7 +20,7 @@ export const plugins = [
         name: 'Kakuyomu Notation Plugin',
         className: 'KakuyomuNotationPlugin',
         path: '../plugins/kakuyomu-notation-plugin/kakuyomu-notation-plugin.js',
-        cssPath: '../plugins/kakuyomu-notation-plugin/kakuyomu-notation-plugin.css',
+        cssPath: 'plugins/kakuyomu-notation-plugin/kakuyomu-notation-plugin.css',
         enabled: true,
         description: 'カクヨム記法をプレビューに反映します。',
     },
@@ -28,13 +28,13 @@ export const plugins = [
         name: 'Syntax Highlight Plugin',
         className: 'SyntaxHighlightPlugin',
         path: '../plugins/syntax-highlight-plugin/syntax-highlight-plugin.js',
-        cssPath: '../plugins/syntax-highlight-plugin/prism.min.css',
+        cssPath: 'plugins/syntax-highlight-plugin/prism.min.css',
         enabled: true,
         description: 'コードのシンタックスハイライトを有効にします。',
         uiElementId: 'toggle-sinha-btn',
         dependencies: [
-            '../plugins/syntax-highlight-plugin/prism.min.js',
-            '../plugins/syntax-highlight-plugin/prism-javascript.min.js'
+            'plugins/syntax-highlight-plugin/prism.min.js',
+            'plugins/syntax-highlight-plugin/prism-javascript.min.js'
         ]
     }
 ];

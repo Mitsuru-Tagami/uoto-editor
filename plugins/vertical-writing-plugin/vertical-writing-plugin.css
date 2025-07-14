@@ -2,8 +2,6 @@
 #editor.vertical-writing {
     box-sizing: border-box; /* はみ出し問題を解決する魔法の言葉よ */
     writing-mode: vertical-rl;
-    -webkit-writing-mode: vertical-rl;
-    -ms-writing-mode: tb-rl;
     white-space: pre-wrap;
     background-image: linear-gradient(to left, #ddd 1px, transparent 1px);
     background-size: 24px 100%;
@@ -16,8 +14,10 @@
     padding-right: 2em; /* これで物理的な下に2文字分の余白ができる */
 
     /* 18行分の高さに固定 (画面からはみ出さないように調整) */
+    flex-grow: 0;
+    flex-shrink: 0;
     flex-basis: calc(1.5em * 18 + 2em); /* padding-right */
-    flex-shrink: 0; /* 縮まないようにする */
+    width: 100%; /* 縦書き時に幅を100%にする */
 }
 
 
@@ -54,4 +54,9 @@
 /* 横書きモードのスタイル (プレビュー) */
 #preview.horizontal-writing {
     /* display: block; */ /* カクヨム記法プラグインで制御するためコメントアウト */
+}
+
+/* 縦書きモードの時にラッパーのレイアウトを調整 */
+.editor-wrapper.vertical-mode {
+    flex-direction: column;
 }

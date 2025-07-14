@@ -31,11 +31,10 @@ export class VerticalWritingPlugin {
             this.editor.editorTitleElement.textContent = '魚兎エディタ (縦書き)';
             this.editor.emit('modeChanged', 'vertical');
         } else {
-            editorElement.classList.remove('vertical-writing');
-            editorElement.classList.add('horizontal-writing');
-            previewElement.classList.remove('vertical-writing');
-            previewElement.classList.add('horizontal-writing');
-            this.editor.editorTitleElement.textContent = '魚兎エディタ (横書き)';
+            this.editor.editorElement.classList.remove('vertical-writing');
+            this.editor.editorElement.classList.add('horizontal-writing');
+            this.editor.previewElement.style.display = 'block'; // 横書きモードではプレビューを表示
+            this.editor.editorWrapperElement.classList.remove('vertical-mode'); // ラッパーからvertical-modeクラスを削除
             this.editor.emit('modeChanged', 'horizontal');
         }
     }

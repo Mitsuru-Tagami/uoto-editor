@@ -11,9 +11,10 @@ class Editor {
         this.replaceBtn = document.getElementById(options.replaceBtnId);
         this.replaceAllBtn = document.getElementById(options.replaceAllBtnId);
         this.editorTitleElement = document.getElementById(options.editorTitleId);
+        this.editorWrapperElement = document.getElementById(options.editorWrapperId); // エディタラッパー要素を追加
 
-        this.lineNumberElement = document.getElementById(options.lineNumberId); // 行番号要素を追加
-        this.showLineNumbers = localStorage.getItem('showLineNumbers') === 'false' ? false : true; // 行番号の表示状態をlocalStorageから読み込む
+        this.lineNumberElement = null; // 行番号要素を無効化
+        this.showLineNumbers = false; // 行番号の表示状態をlocalStorageから読み込む（デフォルトは非表示）
 
         this.toggleSinhaBtn = document.getElementById(options.toggleSinhaBtnId); // シンハONOFFボタンを追加
         this.isSinhaEnabled = true; // シンハの有効状態
@@ -295,7 +296,8 @@ document.addEventListener('DOMContentLoaded', () => {
         replaceAllBtnId: 'replace-all-btn',
         editorTitleId: 'editor-title',
         lineNumberId: 'line-numbers',
-        toggleSinhaBtnId: 'toggle-sinha-btn' // シンハONOFFボタンのIDを追加
+        toggleSinhaBtnId: 'toggle-sinha-btn',
+        editorWrapperId: 'editor-wrapper' // エディタラッパーのIDを追加
     });
 
     // グローバルアクセス用 (デバッグや将来のプラグインで必要になる場合)
