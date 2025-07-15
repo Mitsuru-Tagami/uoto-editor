@@ -1,6 +1,19 @@
 import { plugins } from '../config/plugins.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
+    // README.mdを読み込んでエディタの初期テキストとして設定
+    try {
+        const response = await fetch('README.md');
+        if (response.ok) {
+            const readmeText = await response.text();
+            document.getElementById('editor').value = readmeText;
+        } else {
+            console.error('Failed to load README.md');
+        }
+    } catch (error) {
+        console.error('Error fetching README.md:', error);
+    }
+
     const editorInstance = new Editor({
         editorId: 'editor',
         previewId: 'preview',
